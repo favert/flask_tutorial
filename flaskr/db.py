@@ -3,7 +3,11 @@ import sqlite3
 import click
 from flask import current_app, g
 
-
+# g is a special object that is unique for each request.
+# It is used to store data that might be accessed by multiple functions
+# during the request.
+# The connection is stored and reused instead of creating a new connection
+# if get_db is called a second time in the same request.
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
@@ -34,6 +38,8 @@ def init_db_command():
     init_db()
     click.echo('Initialized the database.')
 
+# app.taerdown_appcontext() tells Flask to call that function when cleaning up after returning the response.
+# app.cli.add_command() adds a new command that can be called with the flask command.
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
