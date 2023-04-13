@@ -43,7 +43,7 @@ def create():
 
     return render_template('blog/create.html')
 
-def get_post(id, check_author=True):
+def get_post(id, check_author=True, api_call=False):
     post = get_db().execute(
         'SELECT p.id, title, body, created, author_id, username'
         ' FROM post p JOIN user u ON p.author_id = u.id'
@@ -52,7 +52,10 @@ def get_post(id, check_author=True):
     ).fetchone()
 
     if post is None:
-        abort(404, f"Post id {id} doesn't exist.")
+        if not api_call:
+            abort(404, f"Post id {id} doesn't exist.")
+        else:
+            return 0
 
     if check_author and post['author_id'] != g.user['id']:
         abort(403)
