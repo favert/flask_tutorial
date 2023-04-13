@@ -2,8 +2,8 @@
 from flask import Flask, Blueprint, request, jsonify
 
 from flaskr.db import get_db
-
 from flaskr.blog import get_post
+from flaskr.auth import login_required
 
 bp = Blueprint('postsAPI', __name__)
 
@@ -21,8 +21,7 @@ def get_posts():
 def add_posts():
     if request.is_json:
         post = request.get_json()
-        #posts.append(country)
-
+        
         db = get_db()
         db.execute(
             'INSERT INTO post (title, body, author_id)'
